@@ -111,7 +111,7 @@ const Ping = ({ selectedTarget }) => {
                 <Form>
                     <Row className="align-items-end">
                         <Col md={6}>
-                            <Form.Group className="mb-3">
+                            <Form.Group>
                                 <Form.Label>IP Address</Form.Label>
                                 <InputGroup>
                                     {ipAddress.split('.').map((segment, segmentIndex) => (
@@ -134,7 +134,7 @@ const Ping = ({ selectedTarget }) => {
                             </Form.Group>
                         </Col>
                         <Col md={2}>
-                            <Form.Group className="mb-3">
+                            <Form.Group>
                                 <Form.Label>Port</Form.Label>
                                 <Form.Control
                                     type="number"
@@ -147,7 +147,7 @@ const Ping = ({ selectedTarget }) => {
                             </Form.Group>
                         </Col>
                         <Col md={2}>
-                            <Form.Group className="mb-3">
+                            <Form.Group>
                                 <Form.Label>Interval (ms)</Form.Label>
                                 <Form.Control
                                     type="number"
@@ -160,17 +160,15 @@ const Ping = ({ selectedTarget }) => {
                             </Form.Group>
                         </Col>
                         <Col md={2}>
-                            <div className="mb-3">
-                                {!pinging ? (
-                                    <Button variant="primary" onClick={startPing} className="w-100">
-                                        Start Ping
-                                    </Button>
-                                ) : (
-                                    <Button variant="danger" onClick={stopPing} className="w-100">
-                                        Stop Ping
-                                    </Button>
-                                )}
-                            </div>
+                            {!pinging ? (
+                                <Button variant="primary" onClick={startPing} className="w-100">
+                                    Start Ping
+                                </Button>
+                            ) : (
+                                <Button variant="danger" onClick={stopPing} className="w-100">
+                                    Stop Ping
+                                </Button>
+                            )}
                         </Col>
                     </Row>
                 </Form>
