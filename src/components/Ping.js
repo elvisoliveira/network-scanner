@@ -1,64 +1,96 @@
 import React, { useState, useRef } from 'react';
-import { Card, Form, Button, ListGroup, Row, Col } from 'react-bootstrap';
+import { Card, Form, Button, ListGroup, Row, Col, InputGroup } from 'react-bootstrap';
 import { tcpPing } from '../utils/networkUtils';
 
 const Ping = () => {
-    const [ipAddress, setIpAddress] = useState('');
+    const [ipAddress, setIpAddress] = useState('192.168.1.1');
     const [port, setPort] = useState(80);
-    const [interval, setInterval] = useState(1000);
+    const [interval, setIntervalTime] = useState(1000);
     const [pinging, setPinging] = useState(false);
     const [results, setResults] = useState([]);
     const pingIntervalRef = useRef(null);
 
     const isValidIP = (ip) => {
-        const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-        return ipRegex.test(ip);
+        const segments = ip.split('.');
+        return segments.length === 4 && segments.every(segment => {
+            const num = parseInt(segment);
+            return !isNaN(num) && num >= 0 && num <= 255;
+        });
+    };
+
+    const handleIPSegmentChange = (segmentIndex, value) => {
+        const segments = ipAddress.split('.');
+        segments[segmentIndex] = value;
+        setIpAddress(segments.join('.'));
     };
 
     const pingHost = async (ip, targetPort) => {
+        console.log(`[Ping] Starting ping to ${ip}:${targetPort}`);
+        const startTime = Date.now();
+
         const result = await tcpPing(ip, targetPort, 5000);
+        const totalTime = Date.now() - startTime;
+
+        console.log(`[Ping] Result for ${ip}:${targetPort}:`, {
+            success: result.success,
+            responseTime: result.responseTime,
+            totalTime: totalTime,
+            error: result.error
+        });
+
         return {
             success: result.success,
             time: result.responseTime || 0,
-            error: result.error,
-            service: result.service
+            error: result.error
         };
     };
 
     const startPing = async () => {
         if (!isValidIP(ipAddress)) {
+            console.log('[Ping] Invalid IP address:', ipAddress);
             alert('Please enter a valid IP address');
             return;
         }
 
+        console.log(`[Ping] Starting ping session to ${ipAddress}:${port} with ${interval}ms interval`);
         setPinging(true);
         setResults([]);
 
         const doPing = async () => {
             const timestamp = new Date().toLocaleTimeString();
+            console.log(`[Ping] Executing ping at ${timestamp}`);
+
             const result = await pingHost(ipAddress, port);
 
-            setResults(prev => [...prev.slice(-9), {
+            const newResult = {
                 timestamp,
                 ip: ipAddress,
                 port,
                 ...result
-            }]);
+            };
+
+            console.log('[Ping] Adding result to list:', newResult);
+            setResults(prev => [newResult, ...prev.slice(0, 9)]);
         };
 
         // Initial ping
+        console.log('[Ping] Executing initial ping');
         await doPing();
 
         // Set up interval
+        console.log(`[Ping] Setting up interval every ${interval}ms`);
         pingIntervalRef.current = setInterval(doPing, interval);
     };
 
     const stopPing = () => {
+        console.log('[Ping] Stopping ping session');
         if (pingIntervalRef.current) {
             clearInterval(pingIntervalRef.current);
             pingIntervalRef.current = null;
+            console.log('[Ping] Interval cleared');
         }
         setPinging(false);
+        console.log('[Ping] Ping session stopped');
     };
 
     return (
@@ -69,16 +101,27 @@ const Ping = () => {
             <Card.Body>
                 <Form>
                     <Row className="align-items-end">
-                        <Col md={4}>
+                        <Col md={6}>
                             <Form.Group className="mb-3">
                                 <Form.Label>IP Address</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="192.168.1.1"
-                                    value={ipAddress}
-                                    onChange={(e) => setIpAddress(e.target.value)}
-                                    disabled={pinging}
-                                />
+                                <InputGroup>
+                                    {ipAddress.split('.').map((segment, segmentIndex) => (
+                                        <React.Fragment key={segmentIndex}>
+                                            <Form.Control
+                                                type="number"
+                                                min="0"
+                                                max="255"
+                                                value={segment}
+                                                onChange={(e) => handleIPSegmentChange(segmentIndex, e.target.value)}
+                                                disabled={pinging}
+                                                placeholder="0"
+                                                className="text-center"
+                                                style={{ width: '60px' }}
+                                            />
+                                            {segmentIndex < 3 && <InputGroup.Text>.</InputGroup.Text>}
+                                        </React.Fragment>
+                                    ))}
+                                </InputGroup>
                             </Form.Group>
                         </Col>
                         <Col md={2}>
@@ -94,7 +137,7 @@ const Ping = () => {
                                 />
                             </Form.Group>
                         </Col>
-                        <Col md={3}>
+                        <Col md={2}>
                             <Form.Group className="mb-3">
                                 <Form.Label>Interval (ms)</Form.Label>
                                 <Form.Control
@@ -102,12 +145,12 @@ const Ping = () => {
                                     min="500"
                                     max="10000"
                                     value={interval}
-                                    onChange={(e) => setInterval(parseInt(e.target.value))}
+                                    onChange={(e) => setIntervalTime(parseInt(e.target.value))}
                                     disabled={pinging}
                                 />
                             </Form.Group>
                         </Col>
-                        <Col md={3}>
+                        <Col md={2}>
                             <div className="mb-3">
                                 {!pinging ? (
                                     <Button variant="primary" onClick={startPing} className="w-100">
@@ -135,7 +178,7 @@ const Ping = () => {
                                     <small>
                                         {result.timestamp} - {result.ip}:{result.port} {' '}
                                         {result.success
-                                            ? `Response time: ${result.time}ms ${result.service ? `(${result.service})` : ''}`
+                                            ? `Response time: ${result.time}ms`
                                             : `Failed: ${result.error || 'timeout'}`
                                         }
                                     </small>

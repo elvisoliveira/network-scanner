@@ -1,9 +1,7 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { useScannerConfig } from './hooks/useScannerConfig';
-import { NetworkScannerService } from './services/NetworkScannerService';
+import { scanNetwork } from './utils/networkUtils';
 import ConfigurationPanel from './components/ConfigurationPanel';
-import StatisticsPanel from './components/StatisticsPanel';
 import DeviceList from './components/DeviceList';
 import Ping from './components/Ping';
 
@@ -15,8 +13,14 @@ const NetworkScanner = () => {
     const [scanning, setScanning] = useState(false);
     const [devices, setDevices] = useState([]);
     const [progress, setProgress] = useState(0);
-    const { scanConfig, updateConfig } = useScannerConfig();
+    const [scanConfig, setScanConfig] = useState({
+        subnets: [{ subnet: '10.140.10' }, { subnet: '192.168.12' }],
+        timeout: 1000,
+        ports: [9100, 8080, 3306, 1433, 631, 443, 389, 110, 80, 25, 23, 22, 21]
+    });
     const scanCancelRef = useRef(false);
+
+    const updateConfig = (field, value) => setScanConfig(prev => ({ ...prev, [field]: value }));
 
     const startNetworkScan = async () => {
         setScanning(true);
@@ -36,7 +40,7 @@ const NetworkScanner = () => {
                     subnet: subnetConfig.subnet
                 };
 
-                await NetworkScannerService.scanNetwork(
+                await scanNetwork(
                     config,
                     (subnetProgress) => {
                         const overallProgress = ((completedSubnets * 100) + subnetProgress) / totalSubnets;
@@ -44,7 +48,7 @@ const NetworkScanner = () => {
                     },
                     (device) => setDevices(current => [...current, {
                         ...device,
-                        subnet: subnetConfig.subnet // Add subnet info to device
+                        subnet: subnetConfig.subnet
                     }]),
                     () => scanCancelRef.current
                 );
@@ -76,7 +80,7 @@ const NetworkScanner = () => {
                         onStopScan={stopScan}
                         progress={progress}
                     />
-                    <StatisticsPanel devices={devices} />
+
                 </Col>
                 <Col md={8}>
                     <DeviceList
