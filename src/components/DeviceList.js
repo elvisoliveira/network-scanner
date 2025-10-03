@@ -1,10 +1,10 @@
 import { Card, Table, Badge } from 'react-bootstrap';
 
-const DeviceList = ({ devices, scanning }) => {
+const DeviceList = ({ devices, scanning, onPortClick }) => {
     return (
         <Card>
             <Card.Header>
-                <h5>Devices Found ({devices.length})</h5>
+                Devices Found ({devices.length})
             </Card.Header>
             <Card.Body style={{ maxHeight: '600px', overflowY: 'auto' }}>
                 {devices.length === 0 ? (
@@ -26,7 +26,14 @@ const DeviceList = ({ devices, scanning }) => {
                                     <td><strong>{device.ip}</strong></td>
                                     <td>
                                         {device.openPorts.map(port => (
-                                            <Badge key={port.port} bg="success" className="me-1">
+                                            <Badge 
+                                                key={port.port} 
+                                                bg="success" 
+                                                className="me-1" 
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={() => onPortClick && onPortClick(device.ip, port.port)}
+                                                title={`Click to ping ${device.ip}:${port.port}`}
+                                            >
                                                 {port.port}
                                             </Badge>
                                         ))}

@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { scanNetwork } from './utils/networkUtils';
 import ConfigurationPanel from './components/ConfigurationPanel';
+import NetworkInfo from './components/NetworkInfo';
 import DeviceList from './components/DeviceList';
 import Ping from './components/Ping';
 
@@ -13,14 +14,33 @@ const NetworkScanner = () => {
     const [scanning, setScanning] = useState(false);
     const [devices, setDevices] = useState([]);
     const [progress, setProgress] = useState(0);
+    const [selectedTarget, setSelectedTarget] = useState({ ip: '', port: null });
     const [scanConfig, setScanConfig] = useState({
-        subnets: [{ subnet: '10.140.10' }, { subnet: '192.168.12' }],
+        subnets: [],
         timeout: 1000,
-        ports: [9100, 8080, 3306, 1433, 631, 443, 389, 110, 80, 25, 23, 22, 21]
+        ports: [9100, 8080, 3306, 1433, 631, 443, 389, 110, 80, 25, 23, 22]
     });
     const scanCancelRef = useRef(false);
 
     const updateConfig = (field, value) => setScanConfig(prev => ({ ...prev, [field]: value }));
+
+    const handleNetworkInfoUpdate = (networkData) => {
+        if (networkData?.localAddress) {
+            const localSubnet = networkData.localAddress.split('.').slice(0, 3).join('.');
+            const existingSubnets = scanConfig.subnets.map(s => s.subnet);
+            
+            if (!existingSubnets.includes(localSubnet)) {
+                setScanConfig(prev => ({
+                    ...prev,
+                    subnets: [...prev.subnets, { subnet: localSubnet }]
+                }));
+            }
+        }
+    };
+
+    const handlePortClick = (ip, port) => {
+        setSelectedTarget({ ip, port });
+    };
 
     const startNetworkScan = async () => {
         setScanning(true);
@@ -80,14 +100,15 @@ const NetworkScanner = () => {
                         onStopScan={stopScan}
                         progress={progress}
                     />
-
+                    <NetworkInfo onNetworkInfoUpdate={handleNetworkInfoUpdate} />
                 </Col>
                 <Col md={8}>
                     <DeviceList
                         devices={devices}
                         scanning={scanning}
+                        onPortClick={handlePortClick}
                     />
-                    <Ping />
+                    <Ping selectedTarget={selectedTarget} />
                 </Col>
             </Row>
         </Container>

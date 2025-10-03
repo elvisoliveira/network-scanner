@@ -1,14 +1,23 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, Form, Button, ListGroup, Row, Col, InputGroup } from 'react-bootstrap';
 import { tcpPing } from '../utils/networkUtils';
 
-const Ping = () => {
+const Ping = ({ selectedTarget }) => {
     const [ipAddress, setIpAddress] = useState('192.168.1.1');
-    const [port, setPort] = useState(80);
+    const [port, setPort] = useState(8080);
     const [interval, setIntervalTime] = useState(1000);
     const [pinging, setPinging] = useState(false);
     const [results, setResults] = useState([]);
     const pingIntervalRef = useRef(null);
+
+    useEffect(() => {
+        if (selectedTarget?.ip && selectedTarget.ip !== ipAddress) {
+            setIpAddress(selectedTarget.ip);
+        }
+        if (selectedTarget?.port && selectedTarget.port !== port) {
+            setPort(selectedTarget.port);
+        }
+    }, [selectedTarget]);
 
     const isValidIP = (ip) => {
         const segments = ip.split('.');
@@ -96,7 +105,7 @@ const Ping = () => {
     return (
         <Card className="mt-3">
             <Card.Header>
-                <h5>Ping Tool</h5>
+                Ping Tool
             </Card.Header>
             <Card.Body>
                 <Form>
