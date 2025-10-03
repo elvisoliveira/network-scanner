@@ -9,6 +9,22 @@ A modern network scanning tool built with React and the Direct Sockets API (http
 - Direct Sockets API support
 - Node.js and npm for development
 
+### Enable IWA Support
+Before installing, you need to enable Isolated Web App support. Choose one of these methods:
+
+#### Option A: Chrome Flags (Recommended)
+1. Navigate to `chrome://flags/#enable-isolated-web-apps`
+2. Set "Isolated Web Apps" to **Enabled**
+3. Navigate to `chrome://flags/#enable-isolated-web-app-dev-mode`
+4. Set "Isolated Web App Developer Mode" to **Enabled**
+5. Restart Chrome/Chromium
+
+#### Option B: Command Line Flags
+Launch Chrome/Chromium with flags:
+```bash
+chromium --test-type --enable-features=IsolatedWebApps,IsolatedWebAppDevMode
+```
+
 ### Running as IWA (Isolated Web App)
 - Start the development server:
 ```bash
@@ -22,10 +38,6 @@ chromium --test-type --enable-features=IsolatedWebApps,IsolatedWebAppDevMode --i
 ```
 
 #### Method 2: Developer Mode Installation
-- Open Chrome/Chromium with IWA flags:
-```bash
-chromium --test-type --enable-features=IsolatedWebApps,IsolatedWebAppDevMode
-```
 - Navigate to `chrome://web-app-internals/`
 - Under "Developer Mode", add the URL: `http://127.0.0.1:3647/`
 - Click "Install" to install the app as an IWA
