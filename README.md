@@ -25,24 +25,39 @@ Launch Chrome/Chromium with flags:
 chromium --test-type --enable-features=IsolatedWebApps,IsolatedWebAppDevMode
 ```
 
-### Running as IWA (Isolated Web App)
-- Start the development server:
+### Installation Methods
+
+#### Method 1: Pre-built Bundle (Recommended)
+1. Download the latest `network-scanner.swbn` file from the [releases page](https://github.com/elvisoliveira/network-scanner/releases/)
+2. Navigate to `chrome://web-app-internals/`
+3. Under "Install IWA from Signed Web Bundle", upload the downloaded `.swbn` file
+
+#### Method 2: Build Your Own Bundle
+1. Generate a private key:
+```bash
+openssl genpkey -algorithm Ed25519 -out ed25519key.pem
+```
+2. Build the bundle:
+```bash
+npm install
+npm run build
+npm run bundle
+```
+3. Upload the generated `network-scanner.swbn` file at `chrome://web-app-internals/` under "Install IWA from Signed Web Bundle"
+
+#### Method 3: Self-Host a Dev Mode Proxy
+1. Start the development server:
 ```bash
 npm install
 npm start
 ```
-#### Method 1: Command Line Installation
-- Install as Isolated Web App in Chromium
+2. Install using command line:
 ```bash
 chromium --test-type --enable-features=IsolatedWebApps,IsolatedWebAppDevMode --install-isolated-web-app-from-url=http://127.0.0.1:3647/
 ```
+3. Or navigate to `chrome://web-app-internals/` and under "Install IWA via Dev Mode Proxy", add the URL: `http://127.0.0.1:3647/`
 
-#### Method 2: Developer Mode Installation
-- Navigate to `chrome://web-app-internals/`
-- Under "Developer Mode", add the URL: `http://127.0.0.1:3647/`
-- Click "Install" to install the app as an IWA
-
-Once installed the app will be available on `chrome://apps/`
+Once installed, the app will be available on `chrome://apps/`
 
 ## Technical Details
 
