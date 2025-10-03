@@ -5,6 +5,7 @@ import { NetworkScannerService } from './services/NetworkScannerService';
 import ConfigurationPanel from './components/ConfigurationPanel';
 import StatisticsPanel from './components/StatisticsPanel';
 import DeviceList from './components/DeviceList';
+import Ping from './components/Ping';
 
 /**
  * NetworkScanner component - Main component for the network scanning application
@@ -82,6 +83,7 @@ const NetworkScanner = () => {
                         devices={devices}
                         scanning={scanning}
                     />
+                    <Ping />
                 </Col>
             </Row>
         </Container>
