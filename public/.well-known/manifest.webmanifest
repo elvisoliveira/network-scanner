@@ -1,0 +1,28 @@
+{
+  "id": "/",
+  "scope": "/",
+  "start_url": "/",
+  "name": "Network Scanner",
+  "short_name": "NetScan",
+  "version": "0.1.0",
+  "display": "standalone",
+  "permissions_policy": {
+    "cross-origin-isolated": [
+      "self"
+    ],
+    "direct-sockets": [
+      "self"
+    ],
+    "direct-sockets-private": [
+      "self"
+    ]
+  },
+  "icons": [
+    {
+      "src": "/icons-vector.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
