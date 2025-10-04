@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Button, Spinner } from 'react-bootstrap';
 import { fetchJsonWithTCPSocket } from '../utils/networkUtils';
 
@@ -17,12 +17,10 @@ const NetworkInfo = ({ onNetworkInfoUpdate }) => {
             if (data) {
                 console.log('[NetworkInfo] Network data received:', data);
                 setNetworkData(data);
-                if (onNetworkInfoUpdate) {
+                if (onNetworkInfoUpdate)
                     onNetworkInfoUpdate(data);
-                }
-            } else {
+            } else
                 setError('Failed to fetch network information');
-            }
         } catch (err) {
             console.error('[NetworkInfo] Error fetching network info:', err);
             setError(err.message || 'Unknown error occurred');
@@ -46,14 +44,16 @@ const NetworkInfo = ({ onNetworkInfoUpdate }) => {
                     onClick={fetchNetworkInfo}
                     disabled={loading}
                 >
-                    {loading ? (
-                        <>
-                            <Spinner size="sm" className="me-1" />
+                    {loading
+                        ? (
+                            <>
+                                <Spinner size="sm" className="me-1" />
                             Loading...
-                        </>
-                    ) : (
-                        'Refresh'
-                    )}
+                            </>
+                        )
+                        : (
+                            'Refresh'
+                        )}
                 </Button>
             </Card.Header>
             <Card.Body>
@@ -107,7 +107,7 @@ const NetworkInfo = ({ onNetworkInfoUpdate }) => {
 
                 {!loading && !networkData && !error && (
                     <div className="text-center text-muted p-3">
-                        Click "Refresh" to fetch network information
+                        Click &quot;Refresh&quot; to fetch network information
                     </div>
                 )}
             </Card.Body>

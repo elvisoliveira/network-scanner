@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { scanNetwork } from './utils/networkUtils';
 import ConfigurationPanel from './components/ConfigurationPanel';
@@ -28,13 +28,12 @@ const NetworkScanner = () => {
         if (networkData?.localAddress) {
             const localSubnet = networkData.localAddress.split('.').slice(0, 3).join('.');
             const existingSubnets = scanConfig.subnets.map(s => s.subnet);
-            
-            if (!existingSubnets.includes(localSubnet)) {
+
+            if (!existingSubnets.includes(localSubnet))
                 setScanConfig(prev => ({
                     ...prev,
                     subnets: [...prev.subnets, { subnet: localSubnet }]
                 }));
-            }
         }
     };
 

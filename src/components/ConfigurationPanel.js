@@ -178,32 +178,34 @@ const ConfigurationPanel = ({
                         </Form.Group>
                     </div>
                     <div className="d-grid gap-2">
-                        {!scanning ? (
-                            <Button
-                                variant="primary"
-                                onClick={onStartScan}
-                                disabled={Object.values(validation).some(subnetValidation =>
-                                    Object.values(subnetValidation || {}).some(isValid => isValid === false)
-                                )}
-                                className="py-2 shadow-sm"
-                            >
-                                <div className="d-flex align-items-center justify-content-center">
-                                    <BsShieldCheck className="me-2" />
-                                    Start Network Scan
-                                </div>
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="danger"
-                                onClick={onStopScan}
-                                className="py-2 shadow-sm"
-                            >
-                                <div className="d-flex align-items-center justify-content-center">
-                                    <BsArrowRepeat className="me-2" />
-                                    Stop Scan
-                                </div>
-                            </Button>
-                        )}
+                        {!scanning
+                            ? (
+                                <Button
+                                    variant="primary"
+                                    onClick={onStartScan}
+                                    disabled={Object.values(validation).some(subnetValidation =>
+                                        Object.values(subnetValidation || {}).some(isValid => isValid === false)
+                                    )}
+                                    className="py-2 shadow-sm"
+                                >
+                                    <div className="d-flex align-items-center justify-content-center">
+                                        <BsShieldCheck className="me-2" />
+                                        Start Network Scan
+                                    </div>
+                                </Button>
+                            )
+                            : (
+                                <Button
+                                    variant="danger"
+                                    onClick={onStopScan}
+                                    className="py-2 shadow-sm"
+                                >
+                                    <div className="d-flex align-items-center justify-content-center">
+                                        <BsArrowRepeat className="me-2" />
+                                        Stop Scan
+                                    </div>
+                                </Button>
+                            )}
                     </div>
                 </Form>
 

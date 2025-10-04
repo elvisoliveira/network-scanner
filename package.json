@@ -13,7 +13,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "bundle": "webpack"
+    "bundle": "webpack",
+    "lint": "eslint --ext .js ./src --fix"
   },
   "eslintConfig": {
     "extends": [
@@ -34,6 +35,8 @@
     ]
   },
   "devDependencies": {
+    "eslint-config-semistandard": "^17.0.0",
+    "eslint-plugin-react": "^7.37.5",
     "webbundle-webpack-plugin": "^0.2.0",
     "webpack-cli": "^6.0.1"
   }

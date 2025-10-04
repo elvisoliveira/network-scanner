@@ -11,12 +11,11 @@ const Ping = ({ selectedTarget }) => {
     const pingIntervalRef = useRef(null);
 
     useEffect(() => {
-        if (selectedTarget?.ip && selectedTarget.ip !== ipAddress) {
+        if (selectedTarget?.ip && selectedTarget.ip !== ipAddress)
             setIpAddress(selectedTarget.ip);
-        }
-        if (selectedTarget?.port && selectedTarget.port !== port) {
+
+        if (selectedTarget?.port && selectedTarget.port !== port)
             setPort(selectedTarget.port);
-        }
     }, [selectedTarget]);
 
     const isValidIP = (ip) => {
@@ -43,7 +42,7 @@ const Ping = ({ selectedTarget }) => {
         console.log(`[Ping] Result for ${ip}:${targetPort}:`, {
             success: result.success,
             responseTime: result.responseTime,
-            totalTime: totalTime,
+            totalTime,
             error: result.error
         });
 
@@ -57,7 +56,6 @@ const Ping = ({ selectedTarget }) => {
     const startPing = async () => {
         if (!isValidIP(ipAddress)) {
             console.log('[Ping] Invalid IP address:', ipAddress);
-            alert('Please enter a valid IP address');
             return;
         }
 
@@ -160,15 +158,17 @@ const Ping = ({ selectedTarget }) => {
                             </Form.Group>
                         </Col>
                         <Col md={2}>
-                            {!pinging ? (
-                                <Button variant="primary" onClick={startPing} className="w-100">
+                            {!pinging
+                                ? (
+                                    <Button variant="primary" onClick={startPing} className="w-100">
                                     Start Ping
-                                </Button>
-                            ) : (
-                                <Button variant="danger" onClick={stopPing} className="w-100">
+                                    </Button>
+                                )
+                                : (
+                                    <Button variant="danger" onClick={stopPing} className="w-100">
                                     Stop Ping
-                                </Button>
-                            )}
+                                    </Button>
+                                )}
                         </Col>
                     </Row>
                 </Form>

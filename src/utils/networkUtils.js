@@ -34,9 +34,9 @@ export const tcpPing = async (ip, port, timeout = 1000) => {
 };
 
 export const fetchJsonWithTCPSocket = async () => {
-    const HOST = "ipv4.seeip.org";
+    const HOST = 'ipv4.seeip.org';
     const PORT = 443;
-    const PATH = "/geoip/";
+    const PATH = '/geoip/';
 
     console.log(`[fetchJsonWithTCPSocket] Fetching from https://${HOST}${PATH}`);
 
@@ -46,7 +46,7 @@ export const fetchJsonWithTCPSocket = async () => {
         socket.opened.then(async (info) => {
             const localAddress = info.localAddress;
             console.log(`[fetchJsonWithTCPSocket] Local address: ${localAddress}`);
-            
+
             // Close the socket since we only needed the local address
             socket.close();
 
@@ -56,16 +56,16 @@ export const fetchJsonWithTCPSocket = async () => {
                 const jsonData = await response.json();
                 const enrichedData = {
                     ...jsonData,
-                    localAddress: localAddress
+                    localAddress
                 };
-                console.log(`[fetchJsonWithTCPSocket] Parsed JSON with local address:`, enrichedData);
+                console.log('[fetchJsonWithTCPSocket] Parsed JSON with local address:', enrichedData);
                 resolve(enrichedData);
             } catch (error) {
-                console.error("[fetchJsonWithTCPSocket] Fetch failed:", error);
+                console.error('[fetchJsonWithTCPSocket] Fetch failed:', error);
                 reject(error);
             }
         }).catch((error) => {
-            console.error("[fetchJsonWithTCPSocket] Socket connection failed:", error);
+            console.error('[fetchJsonWithTCPSocket] Socket connection failed:', error);
             reject(error);
         });
     });
@@ -88,11 +88,10 @@ export const scanSingleIP = async (ip, config) => {
         }
     });
 
-    if (device.openPorts.length > 0) {
+    if (device.openPorts.length > 0)
         device.responseTime = Math.round(
             device.openPorts.reduce((sum, port) => sum + port.responseTime, 0) / device.openPorts.length
         );
-    }
 
     return device;
 };
@@ -105,9 +104,8 @@ export const scanNetwork = async (config, onProgress, onDeviceFound, shouldStop)
         const batch = [];
         const endBatch = Math.min(i + batchSize - 1, 254);
 
-        for (let j = i; j <= endBatch; j++) {
+        for (let j = i; j <= endBatch; j++)
             batch.push(scanSingleIP(`${config.subnet}.${j}`, config));
-        }
 
         const results = await Promise.all(batch);
         results.forEach(device => {
